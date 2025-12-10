@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music player</title>
+    <link rel="stylesheet" href="music_player.css">
+    <script src="https://kit.fontawesome.com/29e4de4d1a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </div>
+                <div class="circle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                
+            </nav>
+            <img src="../Assets/img/pic1.jpg" class="song-img">
+            <h1>Main Dhoondh ne ko...</h1>
+            <p>Arjit Singh </p>
+            <audio id="song">
+                <source src="Music/Main_Dhoondne_Ko_Zamaane_Mein_[BASS_BOOSTED]__Arijit_Singh(256k).mp3" type="audio/mpeg">
+            </audio>
+            <input type="range" value="0" id="progress">
+            <div class="controls">
+                <div><i class="fa-solid fa-backward"></i></div>
+                <div onclick="playPause()"><i class="fa-solid fa-play" id="control-icon"></i></div>
+
+                <div><i class="fa-solid fa-forward"></i></div>
+
+            </div>
+        </div>
+    </div>
+
+   
+    <script>
+        let progress = document.getElementById("progress");
+        let song = document.getElementById("song");
+        let controlIcon = document.getElementById("control-icon");
+    
+        // Playlist array
+        let playlist = [
+            { title: "Main Dhoondh ne ko...", artist: "Arjit Singh", src: "Music/Main_Dhoondne_Ko_Zamaane_Mein_[BASS_BOOSTED]__Arijit_Singh(256k).mp3", img: "../Assets/img/pic1.jpg" },
+            { title: "Tu Hai Kahan", artist: "Another Artist", src: "Music/Chaal_chal_tu_apni_me_tujhe_pehchan_lunga__Lyrics____Tu_hai_kahan___AUR(256k).mp3", img: "../Assets/img/jisoo.jpg" },
+            { title: "Mujko yaad sataye teri..", artist: "Yet Another Artist", src: "Music/Mujhko_Yaad_Sataye_Teri____Slowed___Reverb____Mujhko_Yaad_Sataye_Teri_Slowed_Reverb_Song___Lofi_Song(256k).mp3", img: "../Assets/img/Kim-YooJung.jpg" }
+        ];
+    
+        let currentSongIndex = 0;
+    
+        // Update UI for the current song
+        function loadSong(index) {
+            const currentSong = playlist[index];
+            song.src = currentSong.src;
+            document.querySelector("h1").textContent = currentSong.title;
+            document.querySelector("p").textContent = currentSong.artist;
+            document.querySelector(".song-img").src = currentSong.img;
+            song.play();
+            controlIcon.classList.add("fa-pause");
+            controlIcon.classList.remove("fa-play");
+        }
+    
+        // Play or pause functionality
+        function playPause() {
+            if (controlIcon.classList.contains("fa-pause")) {
+                song.pause();
+                controlIcon.classList.remove("fa-pause");
+                controlIcon.classList.add("fa-play");
+            } else {
+                song.play();
+                controlIcon.classList.add("fa-pause");
+                controlIcon.classList.remove("fa-play");
+            }
+        }
+    
+        // Forward button functionality
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(currentSongIndex);
+        }
+    
+        // Backward button functionality
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentSongIndex);
+        }
+    
+        // Update progress bar
+        song.onloadedmetadata = function () {
+            progress.max = song.duration;
+            progress.value = song.currentTime;
+        };
+    
+        if (song.play()) {
+            setInterval(() => {
+                progress.value = song.currentTime;
+            }, 500);
+        }
+    
+        progress.onchange = function () {
+            song.currentTime = progress.value;
+            controlIcon.classList.add("fa-pause");
+            controlIcon.classList.remove("fa-play");
+            song.play();
+        };
+    
+        // Assign forward and backward button functionality
+        document.querySelector(".fa-forward").parentElement.onclick = nextSong;
+        document.querySelector(".fa-backward").parentElement.onclick = prevSong;
+    </script>
+    
+
+</body>
+</html>
